@@ -1,44 +1,41 @@
+# File: Home.py
 import streamlit as st
-st.set_page_config(page_title="Honeywell Supplier Portal", layout="wide")
+import streamlit_authenticator as stauth
+from PIL import Image
 
-st.title("🛠️ Honeywell Supplier Collaboration Platform")
-st.write("Welcome to the Supplier Collaboration Portal. Navigate through the sidebar to explore features like file uploads, performance dashboards, and inventory tracking.")
+st.set_page_config(page_title="Supplier Portal Login", layout="wide")
 
-st.image("https://www.honeywell.com/content/dam/honeywell/honeywell-images/backgrounds/industry-aerospace.jpg", use_column_width=True)
-
-
-# ──────── File: pages/1_Upload_Component.py ────────
-import streamlit as st
-import hashlib
-from datetime import datetime
-
-st.title("📁 Upload Component Details")
-
-if 'blockchain' not in st.session_state:
-    st.session_state.blockchain = []
-
-def calculate_hash(file_bytes):
-    return hashlib.sha256(file_bytes).hexdigest()
-
-def create_block(file_name, file_hash, uploader):
-    block = {
-        'index': len(st.session_state.blockchain) + 1,
-        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        'file_name': file_name,
-        'file_hash': file_hash,
-        'uploader': uploader,
-        'previous_hash': st.session_state.blockchain[-1]['block_hash'] if st.session_state.blockchain else '0'
+# Dummy credentials
+credentials = {
+    "usernames": {
+        "alice": {"name": "Alice Brown", "password": stauth.Hasher(["pass1"]).generate()[0]},
+        "bob": {"name": "Bob Smith", "password": stauth.Hasher(["pass2"]).generate()[0]},
+        "carol": {"name": "Carol Jones", "password": stauth.Hasher(["pass3"]).generate()[0]},
+        "david": {"name": "David Liu", "password": stauth.Hasher(["pass4"]).generate()[0]},
+        "eve": {"name": "Eve Patel", "password": stauth.Hasher(["pass5"]).generate()[0]}
     }
-    block_string = f"{block['index']}{block['timestamp']}{block['file_name']}{block['file_hash']}{block['uploader']}{block['previous_hash']}"
-    block['block_hash'] = hashlib.sha256(block_string.encode()).hexdigest()
-    st.session_state.blockchain.append(block)
+}
 
-file = st.file_uploader("Upload Technical File / Certificate / CAD")
-uploader = st.text_input("Uploaded By")
+authenticator = stauth.Authenticate(
+    credentials,
+    "proc_platform", "abcdef", cookie_expiry_days=1
+)
 
-if file and uploader:
-    hash_val = calculate_hash(file.read())
-    if st.button("Upload & Register on Blockchain"):
-        create_block(file.name, hash_val, uploader)
-        st.success(f"Registered {file.name} with hash {hash_val}")
+name, authentication_status, username = authenticator.login("Login", "main")
 
+col1, col2 = st.columns([1, 2])
+with col1:
+    st.markdown("""
+        <div style="height:100vh; background-color:#1E73E8; display:flex; justify-content:center; align-items:center;">
+            <h1 style="color:white; font-size:30px;">Welcome to Our Procurement Platform</h1>
+        </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    if authentication_status:
+        st.success(f"Welcome {name}!")
+        st.markdown("### Use the sidebar to navigate through the portal.")
+    elif authentication_status is False:
+        st.error("Invalid username or password")
+    elif authentication_status is None:
+        st.warning("Please enter your credentials")
