@@ -8,13 +8,29 @@ st.set_page_config(page_title="Supplier Portal Login", layout="wide")
 # Dummy credentials
 credentials = {
     "usernames": {
-        "alice": {"name": "Alice Brown", "password": stauth.Hasher(["pass1"]).generate()[0]},
-        "bob": {"name": "Bob Smith", "password": stauth.Hasher(["pass2"]).generate()[0]},
-        "carol": {"name": "Carol Jones", "password": stauth.Hasher(["pass3"]).generate()[0]},
-        "david": {"name": "David Liu", "password": stauth.Hasher(["pass4"]).generate()[0]},
-        "eve": {"name": "Eve Patel", "password": stauth.Hasher(["pass5"]).generate()[0]}
+        "alice": {
+            "name": "Alice Brown",
+            "password": "$2b$12$DAoq7hLvxcaNa9E6pgvl6OLH5QrEywY.ZVvTfepvlmwDZDmg.G8W2"
+        },
+        "bob": {
+            "name": "Bob Smith",
+            "password": "$2b$12$/6wYVO/.9n6PwmHSV.fT5.XjpHMXNaH0JE4mERWLksdrjdHcLfsEy"
+        },
+        "carol": {
+            "name": "Carol Jones",
+            "password": "$2b$12$vgMIuY8xnWI7OZ7XSHbDSOIO9ttVySTUG0FyRRfrYMNHoarCEoQyq"
+        },
+        "david": {
+            "name": "David Liu",
+            "password": "$2b$12$MtvIdMwsagRHEy0OSEhuWuBIV8cEt/4UjNs9jx5bGCdLHYNuJ0rHO"
+        },
+        "eve": {
+            "name": "Eve Patel",
+            "password": "$2b$12$.vHRaCKQNSuSbtG7pOvp4OZM76vvkKlGVz81WtUKKoBKbq.Pew.f6"
+        }
     }
 }
+
 
 authenticator = stauth.Authenticate(
     credentials,
